@@ -1,0 +1,6 @@
+DASHBOARD DE VENTAS CON IA
+1) Instalar Node.js (nodejs.org, versión LTS)
+2) En esta carpeta abrir una terminal y ejecutar:  npm install
+3) Iniciar el dashboard:   npm start      -> abrir http://localhost:3000
+4) En OTRA terminal registrar ventas:   npm run cli
+   El dashboard se actualiza solo cada 5 segundos.

@@ -5,6 +5,20 @@ const fs = require('fs');
 
 const app = express();
 app.use(express.static(__dirname + '/public'));
+app.use(express.json());
+
+// Recibe una venta desde el formulario web y la guarda
+app.post('/api/ventas', (req, res) => {
+  const v = req.body;
+  const venta = { fecha: v.fecha, producto: v.producto, region: v.region, unidades: Number(v.unidades), precio: Number(v.precio) };
+  if (!/^\d{4}-\d{2}$/.test(venta.fecha) || !venta.unidades || !venta.precio) {
+    return res.status(400).json({ error: 'Datos inválidos' });
+  }
+  const ventas = JSON.parse(fs.readFileSync(__dirname + '/data/ventas.json', 'utf8'));
+  ventas.push(venta);
+  fs.writeFileSync(__dirname + '/data/ventas.json', JSON.stringify(ventas, null, 1));
+  res.json({ ok: true });
+});
 
 // Suma un valor agrupando por un campo (mes, producto o región)
 function agrupar(ventas, campo) {

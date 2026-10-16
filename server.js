@@ -20,6 +20,16 @@ app.post('/api/ventas', (req, res) => {
   res.json({ ok: true });
 });
 
+// Elimina una venta según su posición (índice) en la lista
+app.delete('/api/ventas/:indice', (req, res) => {
+  const ventas = JSON.parse(fs.readFileSync(__dirname + '/data/ventas.json', 'utf8'));
+  const i = Number(req.params.indice);
+  if (!(i >= 0 && i < ventas.length)) return res.status(404).json({ error: 'No existe' });
+  ventas.splice(i, 1);
+  fs.writeFileSync(__dirname + '/data/ventas.json', JSON.stringify(ventas, null, 1));
+  res.json({ ok: true });
+});
+
 // Suma un valor agrupando por un campo (mes, producto o región)
 function agrupar(ventas, campo) {
   const resultado = {};
@@ -59,12 +69,20 @@ app.get('/api/dashboard', (req, res) => {
   const total = valoresMes.reduce((a, b) => a + b, 0);
   const ia = pronosticar(valoresMes);
 
+  // Ventas de cada producto en cada región (para el gráfico de barras agrupadas)
+  const productoRegion = {};
+  ventas.forEach((v) => {
+    productoRegion[v.producto] = productoRegion[v.producto] || {};
+    productoRegion[v.producto][v.region] = (productoRegion[v.producto][v.region] || 0) + v.unidades * v.precio;
+  });
+  const unidades = ventas.reduce((a, v) => a + v.unidades, 0);
+
   // IA: recomendaciones automáticas a partir de los datos
   const mejorProducto = Object.keys(porProducto).sort((a, b) => porProducto[b] - porProducto[a])[0];
   const peorRegion = Object.keys(porRegion).sort((a, b) => porRegion[a] - porRegion[b])[0];
   const recomendaciones = [
     ia.pendiente > 0
-      ? `Las ventas crecen unos $${Math.round(ia.pendiente).toLocaleString()} por mes. Prepare más inventario.`
+      ? `Las ventas crecen unos $${Math.round(ia.pendiente).toLocaleString('es-CO')} por mes. Prepare más inventario.`
       : 'Las ventas están bajando. Revise precios y haga promociones.',
     `"${mejorProducto}" es el producto que más vende: priorícelo en campañas.`,
     `La región ${peorRegion} es la que menos vende: es una oportunidad de expansión.`,
@@ -76,8 +94,12 @@ app.get('/api/dashboard', (req, res) => {
     promedioMes: Math.round(total / meses.length),
     meses, valoresMes,
     pronostico: ia.futuro,
-    porProducto, porRegion,
+    porProducto, porRegion, productoRegion,
+    unidades,
+    pendiente: Math.round(ia.pendiente),
     recomendaciones,
+    // Últimas 10 ventas con su posición, para poder eliminarlas
+    ultimas: ventas.map((v, indice) => ({ ...v, indice })).slice(-10).reverse(),
   });
 });
 

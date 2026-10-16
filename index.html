@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard de Ventas con IA</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <style>
+    body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #eef1f6; color: #1b2230; }
+    header { background: #1565c0; color: white; padding: 16px 24px; }
+    header h1 { margin: 0; font-size: 22px; }
+    main { padding: 20px; display: grid; gap: 16px; grid-template-columns: repeat(3, 1fr); max-width: 1200px; margin: auto; }
+    .card { background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+    .kpi p { font-size: 30px; font-weight: bold; margin: 8px 0 0; color: #1565c0; }
+    .ancho { grid-column: span 2; }
+    .todo { grid-column: 1 / -1; }
+    h2 { font-size: 16px; margin: 0 0 10px; }
+    li { margin-bottom: 8px; }
+    @media (max-width: 800px) { main { grid-template-columns: 1fr; } .ancho { grid-column: auto; } }
+  </style>
+</head>
+<body>
+  <header><h1>📊 Dashboard de Ventas con IA</h1></header>
+  <main>
+    <div class="card kpi"><h2>Ventas totales</h2><p id="total">—</p></div>
+    <div class="card kpi"><h2>Número de ventas</h2><p id="numVentas">—</p></div>
+    <div class="card kpi"><h2>Promedio mensual</h2><p id="promedio">—</p></div>
+
+    <div class="card ancho"><h2>Ventas por mes + pronóstico IA (3 meses)</h2><canvas id="gMes"></canvas></div>
+    <div class="card"><h2>Ventas por región</h2><canvas id="gRegion"></canvas></div>
+
+    <div class="card"><h2>Ventas por producto</h2><canvas id="gProducto"></canvas></div>
+    <div class="card ancho"><h2>🤖 Recomendaciones de la IA</h2><ul id="recomendaciones"></ul></div>
+  </main>
+
+  <script>
+    const dinero = (n) => '$' + Math.round(n).toLocaleString('es-CO');
+    const graficos = {};
+    Chart.defaults.animation = false; // evita parpadeo al actualizar
+
+    function dibujar(id, config) {
+      if (graficos[id]) graficos[id].destroy();
+      graficos[id] = new Chart(document.getElementById(id), config);
+    }
+
+    async function cargar() {
+      const d = await (await fetch('/api/dashboard')).json();
+
+      document.getElementById('total').textContent = dinero(d.total);
+      document.getElementById('numVentas').textContent = d.numVentas;
+      document.getElementById('promedio').textContent = dinero(d.promedioMes);
+
+      // Meses futuros para el pronóstico
+      const [anio, mes] = d.meses[d.meses.length - 1].split('-').map(Number);
+      const futuros = [1, 2, 3].map((i) => {
+        const f = new Date(anio, mes - 1 + i);
+        return f.getFullYear() + '-' + String(f.getMonth() + 1).padStart(2, '0');
+      });
+      const vacios = d.valoresMes.map(() => null);
+      vacios[vacios.length - 1] = d.valoresMes[d.valoresMes.length - 1];
+
+      dibujar('gMes', {
+        type: 'line',
+        data: {
+          labels: [...d.meses, ...futuros],
+          datasets: [
+            { label: 'Ventas reales', data: d.valoresMes, borderColor: '#1565c0', tension: 0.3 },
+            { label: 'Pronóstico IA', data: [...vacios, ...d.pronostico], borderColor: '#f57c00', borderDash: [6, 4], tension: 0.3 },
+          ],
+        },
+      });
+      dibujar('gRegion', {
+        type: 'doughnut',
+        data: { labels: Object.keys(d.porRegion), datasets: [{ data: Object.values(d.porRegion), backgroundColor: ['#0b4aa2', '#3b82f6', '#0f766e', '#93b9f3'] }] },
+      });
+      dibujar('gProducto', {
+        type: 'bar',
+        data: { labels: Object.keys(d.porProducto), datasets: [{ label: 'Ventas', data: Object.values(d.porProducto), backgroundColor: '#3b82f6' }] },
+        options: { plugins: { legend: { display: false } } },
+      });
+
+      document.getElementById('recomendaciones').innerHTML = d.recomendaciones.map((r) => `<li>${r}</li>`).join('');
+    }
+
+    cargar();
+    setInterval(cargar, 5000); // se actualiza solo cada 5 segundos
+  </script>
+</body>
+</html>

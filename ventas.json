@@ -1,0 +1,394 @@
+[
+ {
+  "fecha": "2026-01",
+  "producto": "Electrónica",
+  "region": "Este",
+  "unidades": 6,
+  "precio": 1176
+ },
+ {
+  "fecha": "2026-01",
+  "producto": "Electrónica",
+  "region": "Norte",
+  "unidades": 5,
+  "precio": 1475
+ },
+ {
+  "fecha": "2026-01",
+  "producto": "Ropa",
+  "region": "Norte",
+  "unidades": 9,
+  "precio": 69
+ },
+ {
+  "fecha": "2026-01",
+  "producto": "Ropa",
+  "region": "Sur",
+  "unidades": 4,
+  "precio": 44
+ },
+ {
+  "fecha": "2026-01",
+  "producto": "Hogar",
+  "region": "Oeste",
+  "unidades": 5,
+  "precio": 210
+ },
+ {
+  "fecha": "2026-01",
+  "producto": "Hogar",
+  "region": "Oeste",
+  "unidades": 4,
+  "precio": 357
+ },
+ {
+  "fecha": "2026-02",
+  "producto": "Electrónica",
+  "region": "Norte",
+  "unidades": 8,
+  "precio": 1341
+ },
+ {
+  "fecha": "2026-02",
+  "producto": "Electrónica",
+  "region": "Norte",
+  "unidades": 11,
+  "precio": 935
+ },
+ {
+  "fecha": "2026-02",
+  "producto": "Ropa",
+  "region": "Sur",
+  "unidades": 5,
+  "precio": 68
+ },
+ {
+  "fecha": "2026-02",
+  "producto": "Ropa",
+  "region": "Sur",
+  "unidades": 9,
+  "precio": 61
+ },
+ {
+  "fecha": "2026-02",
+  "producto": "Hogar",
+  "region": "Norte",
+  "unidades": 9,
+  "precio": 290
+ },
+ {
+  "fecha": "2026-02",
+  "producto": "Hogar",
+  "region": "Sur",
+  "unidades": 6,
+  "precio": 295
+ },
+ {
+  "fecha": "2026-03",
+  "producto": "Electrónica",
+  "region": "Sur",
+  "unidades": 11,
+  "precio": 968
+ },
+ {
+  "fecha": "2026-03",
+  "producto": "Electrónica",
+  "region": "Norte",
+  "unidades": 6,
+  "precio": 1333
+ },
+ {
+  "fecha": "2026-03",
+  "producto": "Ropa",
+  "region": "Oeste",
+  "unidades": 12,
+  "precio": 79
+ },
+ {
+  "fecha": "2026-03",
+  "producto": "Ropa",
+  "region": "Oeste",
+  "unidades": 13,
+  "precio": 58
+ },
+ {
+  "fecha": "2026-03",
+  "producto": "Hogar",
+  "region": "Sur",
+  "unidades": 8,
+  "precio": 325
+ },
+ {
+  "fecha": "2026-03",
+  "producto": "Hogar",
+  "region": "Sur",
+  "unidades": 7,
+  "precio": 294
+ },
+ {
+  "fecha": "2026-04",
+  "producto": "Electrónica",
+  "region": "Oeste",
+  "unidades": 12,
+  "precio": 1411
+ },
+ {
+  "fecha": "2026-04",
+  "producto": "Electrónica",
+  "region": "Este",
+  "unidades": 8,
+  "precio": 983
+ },
+ {
+  "fecha": "2026-04",
+  "producto": "Ropa",
+  "region": "Oeste",
+  "unidades": 9,
+  "precio": 78
+ },
+ {
+  "fecha": "2026-04",
+  "producto": "Ropa",
+  "region": "Sur",
+  "unidades": 14,
+  "precio": 61
+ },
+ {
+  "fecha": "2026-04",
+  "producto": "Hogar",
+  "region": "Norte",
+  "unidades": 12,
+  "precio": 235
+ },
+ {
+  "fecha": "2026-04",
+  "producto": "Hogar",
+  "region": "Este",
+  "unidades": 14,
+  "precio": 295
+ },
+ {
+  "fecha": "2026-05",
+  "producto": "Electrónica",
+  "region": "Oeste",
+  "unidades": 9,
+  "precio": 1488
+ },
+ {
+  "fecha": "2026-05",
+  "producto": "Electrónica",
+  "region": "Este",
+  "unidades": 15,
+  "precio": 1388
+ },
+ {
+  "fecha": "2026-05",
+  "producto": "Ropa",
+  "region": "Norte",
+  "unidades": 8,
+  "precio": 77
+ },
+ {
+  "fecha": "2026-05",
+  "producto": "Ropa",
+  "region": "Este",
+  "unidades": 15,
+  "precio": 54
+ },
+ {
+  "fecha": "2026-05",
+  "producto": "Hogar",
+  "region": "Oeste",
+  "unidades": 13,
+  "precio": 156
+ },
+ {
+  "fecha": "2026-05",
+  "producto": "Hogar",
+  "region": "Oeste",
+  "unidades": 13,
+  "precio": 192
+ },
+ {
+  "fecha": "2026-06",
+  "producto": "Electrónica",
+  "region": "Norte",
+  "unidades": 16,
+  "precio": 941
+ },
+ {
+  "fecha": "2026-06",
+  "producto": "Electrónica",
+  "region": "Este",
+  "unidades": 11,
+  "precio": 1417
+ },
+ {
+  "fecha": "2026-06",
+  "producto": "Ropa",
+  "region": "Oeste",
+  "unidades": 15,
+  "precio": 86
+ },
+ {
+  "fecha": "2026-06",
+  "producto": "Ropa",
+  "region": "Oeste",
+  "unidades": 10,
+  "precio": 48
+ },
+ {
+  "fecha": "2026-06",
+  "producto": "Hogar",
+  "region": "Oeste",
+  "unidades": 13,
+  "precio": 371
+ },
+ {
+  "fecha": "2026-06",
+  "producto": "Hogar",
+  "region": "Oeste",
+  "unidades": 13,
+  "precio": 327
+ },
+ {
+  "fecha": "2026-07",
+  "producto": "Electrónica",
+  "region": "Este",
+  "unidades": 16,
+  "precio": 1570
+ },
+ {
+  "fecha": "2026-07",
+  "producto": "Electrónica",
+  "region": "Sur",
+  "unidades": 11,
+  "precio": 1023
+ },
+ {
+  "fecha": "2026-07",
+  "producto": "Ropa",
+  "region": "Sur",
+  "unidades": 13,
+  "precio": 41
+ },
+ {
+  "fecha": "2026-07",
+  "producto": "Ropa",
+  "region": "Sur",
+  "unidades": 14,
+  "precio": 54
+ },
+ {
+  "fecha": "2026-07",
+  "producto": "Hogar",
+  "region": "Sur",
+  "unidades": 16,
+  "precio": 284
+ },
+ {
+  "fecha": "2026-07",
+  "producto": "Hogar",
+  "region": "Este",
+  "unidades": 12,
+  "precio": 323
+ },
+ {
+  "fecha": "2026-08",
+  "producto": "Electrónica",
+  "region": "Norte",
+  "unidades": 18,
+  "precio": 1530
+ },
+ {
+  "fecha": "2026-08",
+  "producto": "Electrónica",
+  "region": "Oeste",
+  "unidades": 17,
+  "precio": 1179
+ },
+ {
+  "fecha": "2026-08",
+  "producto": "Ropa",
+  "region": "Norte",
+  "unidades": 18,
+  "precio": 72
+ },
+ {
+  "fecha": "2026-08",
+  "producto": "Ropa",
+  "region": "Norte",
+  "unidades": 14,
+  "precio": 43
+ },
+ {
+  "fecha": "2026-08",
+  "producto": "Hogar",
+  "region": "Sur",
+  "unidades": 18,
+  "precio": 191
+ },
+ {
+  "fecha": "2026-08",
+  "producto": "Hogar",
+  "region": "Este",
+  "unidades": 11,
+  "precio": 176
+ },
+ {
+  "fecha": "2026-09",
+  "producto": "Electrónica",
+  "region": "Sur",
+  "unidades": 13,
+  "precio": 1564
+ },
+ {
+  "fecha": "2026-09",
+  "producto": "Electrónica",
+  "region": "Norte",
+  "unidades": 13,
+  "precio": 1512
+ },
+ {
+  "fecha": "2026-09",
+  "producto": "Ropa",
+  "region": "Oeste",
+  "unidades": 14,
+  "precio": 72
+ },
+ {
+  "fecha": "2026-09",
+  "producto": "Ropa",
+  "region": "Este",
+  "unidades": 17,
+  "precio": 64
+ },
+ {
+  "fecha": "2026-09",
+  "producto": "Hogar",
+  "region": "Norte",
+  "unidades": 19,
+  "precio": 398
+ },
+ {
+  "fecha": "2026-09",
+  "producto": "Hogar",
+  "region": "Oeste",
+  "unidades": 19,
+  "precio": 271
+ },
+ {
+  "fecha": "2026-10",
+  "producto": "Electronica",
+  "region": "Oeste",
+  "unidades": 20,
+  "precio": 1500
+ },
+ {
+  "fecha": "2026-10",
+  "producto": "Ropa",
+  "region": "Este",
+  "unidades": 40,
+  "precio": 20000
+ }
+]

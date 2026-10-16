@@ -16,6 +16,9 @@
     .todo { grid-column: 1 / -1; }
     h2 { font-size: 16px; margin: 0 0 10px; }
     li { margin-bottom: 8px; }
+    form { display: flex; flex-wrap: wrap; gap: 10px; }
+    input, select, button { padding: 8px 10px; font-size: 14px; border: 1px solid #ccd; border-radius: 6px; }
+    button { background: #1565c0; color: white; border: none; cursor: pointer; }
     @media (max-width: 800px) { main { grid-template-columns: 1fr; } .ancho { grid-column: auto; } }
   </style>
 </head>
@@ -31,6 +34,19 @@
 
     <div class="card"><h2>Ventas por producto</h2><canvas id="gProducto"></canvas></div>
     <div class="card ancho"><h2>🤖 Recomendaciones de la IA</h2><ul id="recomendaciones"></ul></div>
+
+    <div class="card todo">
+      <h2>➕ Registrar una venta</h2>
+      <form id="formulario">
+        <input name="fecha" type="month" required>
+        <select name="producto"><option>Electrónica</option><option>Ropa</option><option>Hogar</option></select>
+        <select name="region"><option>Norte</option><option>Sur</option><option>Este</option><option>Oeste</option></select>
+        <input name="unidades" type="number" min="1" placeholder="Unidades" required>
+        <input name="precio" type="number" min="1" placeholder="Precio unitario" required>
+        <button type="submit">Guardar venta</button>
+      </form>
+      <p id="mensaje"></p>
+    </div>
   </main>
 
   <script>
@@ -81,6 +97,19 @@
 
       document.getElementById('recomendaciones').innerHTML = d.recomendaciones.map((r) => `<li>${r}</li>`).join('');
     }
+
+    // Formulario: envía la venta al servidor con POST
+    document.getElementById('formulario').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const datos = Object.fromEntries(new FormData(e.target));
+      const r = await fetch('/api/ventas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos),
+      });
+      document.getElementById('mensaje').textContent = r.ok ? '✅ Venta guardada' : '❌ Datos inválidos';
+      if (r.ok) { e.target.reset(); cargar(); }
+    });
 
     cargar();
     setInterval(cargar, 5000); // se actualiza solo cada 5 segundos

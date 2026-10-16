@@ -3,99 +3,331 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard de Ventas con IA</title>
+  <title>Ventas Dashboard con IA</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <style>
-    body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: #eef1f6; color: #1b2230; }
-    header { background: #1565c0; color: white; padding: 16px 24px; }
-    header h1 { margin: 0; font-size: 22px; }
-    main { padding: 20px; display: grid; gap: 16px; grid-template-columns: repeat(3, 1fr); max-width: 1200px; margin: auto; }
-    .card { background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
-    .kpi p { font-size: 30px; font-weight: bold; margin: 8px 0 0; color: #1565c0; }
-    .ancho { grid-column: span 2; }
-    .todo { grid-column: 1 / -1; }
-    h2 { font-size: 16px; margin: 0 0 10px; }
-    li { margin-bottom: 8px; }
-    form { display: flex; flex-wrap: wrap; gap: 10px; }
-    input, select, button { padding: 8px 10px; font-size: 14px; border: 1px solid #ccd; border-radius: 6px; }
-    button { background: #1565c0; color: white; border: none; cursor: pointer; }
-    @media (max-width: 800px) { main { grid-template-columns: 1fr; } .ancho { grid-column: auto; } }
+    :root {
+      --azul-oscuro: #0d2b5e;
+      --azul: #3d5a9e;
+      --rosado: #e9409a;
+      --celeste: #8fb8ee;
+      --fondo: #eef1f7;
+      --texto: #1c2541;
+      --gris: #6b7591;
+      --verde: #3aa655;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; background: var(--fondo); color: var(--texto); display: flex; min-height: 100vh; }
+
+    /* ----- Barra lateral ----- */
+    aside { width: 220px; background: linear-gradient(180deg, var(--azul-oscuro), #163c7a); color: white; flex-shrink: 0; position: sticky; top: 0; height: 100vh; }
+    .marca { display: flex; align-items: center; gap: 10px; padding: 24px 20px 28px; }
+    .marca b { font-size: 22px; letter-spacing: 1px; display: block; line-height: 1; }
+    .marca span { font-size: 13px; opacity: .8; letter-spacing: 2px; }
+    nav a { display: block; color: white; text-decoration: none; padding: 14px 20px; margin: 4px 0; font-size: 14px; background: rgba(255,255,255,.08); border-left: 4px solid transparent; }
+    nav a:hover { background: rgba(255,255,255,.18); }
+    nav a.activo { background: white; color: var(--azul-oscuro); font-weight: 600; border-left-color: var(--rosado); }
+
+    /* ----- Contenido ----- */
+    .contenido { flex: 1; min-width: 0; }
+    header { background: white; padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,.08); position: sticky; top: 0; z-index: 2; }
+    header h1 { margin: 0; font-size: 24px; font-weight: 400; letter-spacing: 1px; }
+    header h1 b { font-weight: 800; }
+    .acciones { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--gris); }
+    .boton { background: white; border: 1px solid #cfd5e3; border-radius: 6px; padding: 7px 14px; cursor: pointer; font-size: 13px; color: var(--texto); }
+    main { padding: 20px 28px 40px; }
+    .titulo-seccion { font-size: 16px; font-weight: 700; margin: 8px 0 12px; }
+    .fila { display: grid; gap: 16px; margin-bottom: 16px; }
+    .fila-1 { grid-template-columns: 1fr 1.4fr; }
+    .fila-2 { grid-template-columns: 1fr 1fr 2fr; }
+    .fila-3 { grid-template-columns: 1fr 1fr; }
+    .fila > * { min-width: 0; }
+    .card { background: white; border-radius: 12px; padding: 16px 18px; box-shadow: 0 1px 3px rgba(16,24,40,.08); min-width: 0; }
+    .card h3 { margin: 0 0 10px; font-size: 13px; font-weight: 600; color: var(--gris); }
+
+    /* Indicadores (KPI) */
+    .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .kpi { padding: 0; overflow: hidden; }
+    .kpi .arriba { padding: 16px 18px 10px; }
+    .kpi .titulo { font-size: 14px; font-weight: 600; color: var(--azul); }
+    .kpi .valor { font-size: 32px; font-weight: 400; color: var(--azul-oscuro); margin-top: 8px; }
+    .kpi .abajo { background: #f1f3f8; padding: 10px 18px; font-size: 13px; color: var(--gris); line-height: 1.6; }
+    .verde { color: var(--verde); font-weight: 600; }
+    .rosado { color: var(--rosado); font-weight: 600; }
+
+    .grafico { position: relative; height: 260px; }
+    .grafico.alto { height: 330px; }
+
+    /* Recomendaciones */
+    ol { margin: 0; padding-left: 20px; line-height: 1.7; font-size: 14px; }
+    li::marker { color: var(--rosado); font-weight: 700; }
+
+    /* Formulario */
+    form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    label { font-size: 12px; color: var(--gris); display: grid; gap: 4px; }
+    input, select { padding: 9px 10px; font-size: 14px; border: 1px solid #cfd5e3; border-radius: 6px; font-family: inherit; }
+    button[type=submit] { grid-column: 1 / -1; background: var(--azul-oscuro); color: white; border: none; border-radius: 6px; padding: 11px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    #mensaje { margin: 10px 0 0; font-size: 14px; }
+
+    /* Tabla */
+    .tabla { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { text-align: left; padding: 10px 8px; background: var(--azul-oscuro); color: white; font-weight: 600; }
+    td { padding: 9px 8px; border-bottom: 1px solid #e6e9f0; }
+    tr:nth-child(even) td { background: #f7f8fb; }
+    .eliminar { background: var(--rosado); color: white; border: none; border-radius: 5px; padding: 5px 12px; cursor: pointer; }
+
+    /* Celular */
+    @media (max-width: 900px) {
+      body { display: block; }
+      aside { width: auto; height: auto; position: static; }
+      .marca { padding: 14px 16px; }
+      nav { display: flex; overflow-x: auto; }
+      nav a { white-space: nowrap; margin: 0; }
+      header { padding: 12px 16px; }
+      header h1 { font-size: 18px; }
+      main { padding: 16px; }
+      .fila-1, .fila-2, .fila-3 { grid-template-columns: 1fr; }
+      .kpi .valor { font-size: 24px; }
+      #hora { display: none; }
+      form { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
-  <header><h1>📊 Dashboard de Ventas con IA</h1></header>
-  <main>
-    <div class="card kpi"><h2>Ventas totales</h2><p id="total">—</p></div>
-    <div class="card kpi"><h2>Número de ventas</h2><p id="numVentas">—</p></div>
-    <div class="card kpi"><h2>Promedio mensual</h2><p id="promedio">—</p></div>
-
-    <div class="card ancho"><h2>Ventas por mes + pronóstico IA (3 meses)</h2><canvas id="gMes"></canvas></div>
-    <div class="card"><h2>Ventas por región</h2><canvas id="gRegion"></canvas></div>
-
-    <div class="card"><h2>Ventas por producto</h2><canvas id="gProducto"></canvas></div>
-    <div class="card ancho"><h2>🤖 Recomendaciones de la IA</h2><ul id="recomendaciones"></ul></div>
-
-    <div class="card todo">
-      <h2>➕ Registrar una venta</h2>
-      <form id="formulario">
-        <input name="fecha" type="month" required>
-        <select name="producto"><option>Electrónica</option><option>Ropa</option><option>Hogar</option></select>
-        <select name="region"><option>Norte</option><option>Sur</option><option>Este</option><option>Oeste</option></select>
-        <input name="unidades" type="number" min="1" placeholder="Unidades" required>
-        <input name="precio" type="number" min="1" placeholder="Precio unitario" required>
-        <button type="submit">Guardar venta</button>
-      </form>
-      <p id="mensaje"></p>
+  <!-- Barra lateral -->
+  <aside>
+    <div class="marca">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-6"/></svg>
+      <div><b>TIENDA IA</b><span>VENTAS</span></div>
     </div>
-  </main>
+    <nav>
+      <a href="#resumen" class="activo">Resumen</a>
+      <a href="#analisis">Análisis</a>
+      <a href="#registrar">Registrar venta</a>
+      <a href="#ventas">Ventas registradas</a>
+    </nav>
+  </aside>
+
+  <div class="contenido">
+    <header>
+      <h1><b>VENTAS</b> DASHBOARD</h1>
+      <div class="acciones">
+        <span id="hora"></span>
+        <button class="boton" onclick="cargar()">↻ Actualizar</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Fila 1: indicadores + ventas por mes -->
+      <div class="fila fila-1" id="resumen">
+        <div>
+          <div class="titulo-seccion">Indicadores generales</div>
+          <div class="kpis">
+            <div class="card kpi">
+              <div class="arriba"><div class="titulo">Ventas totales</div><div class="valor" id="total">—</div></div>
+              <div class="abajo" id="totalDetalle"></div>
+            </div>
+            <div class="card kpi">
+              <div class="arriba"><div class="titulo">Número de ventas</div><div class="valor" id="numVentas">—</div></div>
+              <div class="abajo" id="numDetalle"></div>
+            </div>
+            <div class="card kpi">
+              <div class="arriba"><div class="titulo">Promedio mensual</div><div class="valor" id="promedio">—</div></div>
+              <div class="abajo" id="promDetalle"></div>
+            </div>
+            <div class="card kpi">
+              <div class="arriba"><div class="titulo">Pronóstico IA próximo mes</div><div class="valor" id="proximo">—</div></div>
+              <div class="abajo" id="proxDetalle"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="titulo-seccion">Ventas por mes y pronóstico de la IA</div>
+          <div class="card"><h3>Ventas reales y pronóstico de los próximos 3 meses</h3><div class="grafico alto"><canvas id="gMes"></canvas></div></div>
+        </div>
+      </div>
+
+      <!-- Fila 2: donas + barras agrupadas -->
+      <div class="titulo-seccion" id="analisis">Análisis por región y producto</div>
+      <div class="fila fila-2">
+        <div class="card"><h3>Ventas por región</h3><div class="grafico"><canvas id="gRegion"></canvas></div></div>
+        <div class="card"><h3>Ventas por producto</h3><div class="grafico"><canvas id="gProducto"></canvas></div></div>
+        <div class="card"><h3>Ventas de cada producto por región</h3><div class="grafico"><canvas id="gCruce"></canvas></div></div>
+      </div>
+
+      <!-- Fila 3: recomendaciones + formulario -->
+      <div class="fila fila-3">
+        <div class="card"><div class="titulo-seccion" style="margin-top:0">🤖 Recomendaciones de la IA</div><ol id="recomendaciones"></ol></div>
+        <div class="card" id="registrar">
+          <div class="titulo-seccion" style="margin-top:0">➕ Registrar una venta</div>
+          <form id="formulario">
+            <label>Mes<input name="fecha" type="month" required></label>
+            <label>Producto<select name="producto"><option>Electrónica</option><option>Ropa</option><option>Hogar</option></select></label>
+            <label>Región<select name="region"><option>Norte</option><option>Sur</option><option>Este</option><option>Oeste</option></select></label>
+            <label>Unidades<input name="unidades" type="number" min="1" placeholder="Ej. 20" required></label>
+            <label>Precio unitario<input name="precio" type="number" min="1" placeholder="Ej. 1500" required></label>
+            <label>&nbsp;<button type="submit">Guardar venta</button></label>
+          </form>
+          <p id="mensaje"></p>
+        </div>
+      </div>
+
+      <!-- Fila 4: tabla -->
+      <div class="card" id="ventas">
+        <div class="titulo-seccion" style="margin-top:0">🗑️ Últimas ventas registradas</div>
+        <div class="tabla">
+          <table>
+            <thead><tr><th>Mes</th><th>Producto</th><th>Región</th><th>Unidades</th><th>Precio</th><th>Total</th><th></th></tr></thead>
+            <tbody id="tablaVentas"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
 
   <script>
+    const COLORES = { azulOscuro: '#0d2b5e', azul: '#3d5a9e', rosado: '#e9409a', celeste: '#8fb8ee', gris: '#b9c0d0' };
+    const NOMBRES_MES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
     const dinero = (n) => '$' + Math.round(n).toLocaleString('es-CO');
+    const corto = (n) => (n >= 1e6 ? '$' + (n / 1e6).toFixed(1) + 'M' : n >= 1e3 ? '$' + Math.round(n / 1e3) + 'K' : '$' + n);
+    const nombreMes = (m) => NOMBRES_MES[Number(m.slice(5)) - 1] + ' ' + m.slice(2, 4);
     const graficos = {};
-    Chart.defaults.animation = false; // evita parpadeo al actualizar
+
+    Chart.defaults.animation = false;
+    Chart.defaults.font.family = '"Segoe UI", Arial, sans-serif';
+    Chart.defaults.color = '#6b7591';
+    Chart.defaults.maintainAspectRatio = false;
+
+    // Plugin propio: escribe el valor encima de cada barra y el % dentro de cada dona
+    Chart.register({
+      id: 'etiquetas',
+      afterDatasetsDraw(chart) {
+        const ctx = chart.ctx;
+        ctx.save();
+        ctx.textAlign = 'center';
+        chart.data.datasets.forEach((ds, i) => {
+          const meta = chart.getDatasetMeta(i);
+          if (meta.hidden) return;
+          meta.data.forEach((el, j) => {
+            const v = ds.data[j];
+            if (v === null || v === undefined) return;
+            if (chart.config.type === 'doughnut') {
+              const total = ds.data.reduce((a, b) => a + b, 0);
+              const p = el.tooltipPosition();
+              ctx.font = '600 12px "Segoe UI", Arial';
+              ctx.fillStyle = 'white';
+              ctx.fillText(Math.round((v / total) * 100) + '%', p.x, p.y + 4);
+            } else {
+              ctx.font = '600 11px "Segoe UI", Arial';
+              ctx.fillStyle = '#1c2541';
+              ctx.fillText(corto(v), el.x, el.y - 6);
+            }
+          });
+        });
+        ctx.restore();
+      },
+    });
 
     function dibujar(id, config) {
       if (graficos[id]) graficos[id].destroy();
       graficos[id] = new Chart(document.getElementById(id), config);
     }
 
+    const ejeDinero = { ticks: { callback: (v) => corto(v) }, grid: { color: '#eef0f5' } };
+    const leyendaAbajo = { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } };
+
     async function cargar() {
       const d = await (await fetch('/api/dashboard')).json();
+      document.getElementById('hora').textContent = 'Actualizado ' + new Date().toLocaleTimeString('es-CO');
 
+      // ----- Indicadores -----
+      const maxI = d.valoresMes.indexOf(Math.max(...d.valoresMes));
+      const minI = d.valoresMes.indexOf(Math.min(...d.valoresMes));
       document.getElementById('total').textContent = dinero(d.total);
+      document.getElementById('totalDetalle').innerHTML =
+        `Mejor mes - <span class="verde">${nombreMes(d.meses[maxI])}</span><br>Peor mes - <span class="rosado">${nombreMes(d.meses[minI])}</span>`;
       document.getElementById('numVentas').textContent = d.numVentas;
+      document.getElementById('numDetalle').innerHTML =
+        `Unidades - ${d.unidades.toLocaleString('es-CO')}<br>Ticket promedio - ${dinero(d.total / d.numVentas)}`;
       document.getElementById('promedio').textContent = dinero(d.promedioMes);
+      document.getElementById('promDetalle').innerHTML =
+        `Max - <span class="verde">${dinero(d.valoresMes[maxI])}</span><br>Min - ${dinero(d.valoresMes[minI])}`;
+      document.getElementById('proximo').textContent = dinero(d.pronostico[0]);
+      document.getElementById('proxDetalle').innerHTML = d.pendiente >= 0
+        ? `Tendencia - <span class="verde">▲ ${dinero(d.pendiente)} / mes</span><br>Modelo - regresión lineal`
+        : `Tendencia - <span class="rosado">▼ ${dinero(-d.pendiente)} / mes</span><br>Modelo - regresión lineal`;
 
-      // Meses futuros para el pronóstico
+      // ----- Ventas por mes + pronóstico (barras) -----
       const [anio, mes] = d.meses[d.meses.length - 1].split('-').map(Number);
       const futuros = [1, 2, 3].map((i) => {
         const f = new Date(anio, mes - 1 + i);
         return f.getFullYear() + '-' + String(f.getMonth() + 1).padStart(2, '0');
       });
-      const vacios = d.valoresMes.map(() => null);
-      vacios[vacios.length - 1] = d.valoresMes[d.valoresMes.length - 1];
-
       dibujar('gMes', {
-        type: 'line',
+        type: 'bar',
         data: {
-          labels: [...d.meses, ...futuros],
+          labels: [...d.meses, ...futuros].map(nombreMes),
           datasets: [
-            { label: 'Ventas reales', data: d.valoresMes, borderColor: '#1565c0', tension: 0.3 },
-            { label: 'Pronóstico IA', data: [...vacios, ...d.pronostico], borderColor: '#f57c00', borderDash: [6, 4], tension: 0.3 },
+            { label: 'Ventas reales', data: [...d.valoresMes, null, null, null], backgroundColor: COLORES.azul, borderRadius: 3 },
+            { label: 'Pronóstico IA', data: [...d.valoresMes.map(() => null), ...d.pronostico], backgroundColor: COLORES.rosado, borderRadius: 3 },
           ],
         },
-      });
-      dibujar('gRegion', {
-        type: 'doughnut',
-        data: { labels: Object.keys(d.porRegion), datasets: [{ data: Object.values(d.porRegion), backgroundColor: ['#0b4aa2', '#3b82f6', '#0f766e', '#93b9f3'] }] },
-      });
-      dibujar('gProducto', {
-        type: 'bar',
-        data: { labels: Object.keys(d.porProducto), datasets: [{ label: 'Ventas', data: Object.values(d.porProducto), backgroundColor: '#3b82f6' }] },
-        options: { plugins: { legend: { display: false } } },
+        options: {
+          skipNull: true,
+          layout: { padding: { top: 18 } },
+          scales: { y: ejeDinero, x: { grid: { display: false } } },
+          plugins: { legend: leyendaAbajo },
+        },
       });
 
+      // ----- Donas -----
+      const dona = (id, datos, colores) => dibujar(id, {
+        type: 'doughnut',
+        data: { labels: Object.keys(datos), datasets: [{ data: Object.values(datos), backgroundColor: colores, borderColor: 'white', borderWidth: 2 }] },
+        options: { cutout: '55%', plugins: { legend: leyendaAbajo, tooltip: { callbacks: { label: (c) => ` ${c.label}: ${dinero(c.parsed)}` } } } },
+      });
+      dona('gRegion', d.porRegion, [COLORES.azulOscuro, COLORES.rosado, COLORES.celeste, COLORES.azul]);
+      dona('gProducto', d.porProducto, [COLORES.rosado, COLORES.azul, COLORES.celeste]);
+
+      // ----- Barras agrupadas: producto x región -----
+      const regiones = Object.keys(d.porRegion).sort();
+      const coloresProd = [COLORES.rosado, COLORES.azul, COLORES.celeste];
+      dibujar('gCruce', {
+        type: 'bar',
+        data: {
+          labels: regiones,
+          datasets: Object.keys(d.productoRegion).map((p, i) => ({
+            label: p,
+            data: regiones.map((r) => d.productoRegion[p][r] || 0),
+            backgroundColor: coloresProd[i % 3],
+            borderRadius: 3,
+          })),
+        },
+        options: {
+          layout: { padding: { top: 18 } },
+          scales: { y: ejeDinero, x: { grid: { display: false } } },
+          plugins: { legend: leyendaAbajo },
+        },
+      });
+
+      // ----- Recomendaciones -----
       document.getElementById('recomendaciones').innerHTML = d.recomendaciones.map((r) => `<li>${r}</li>`).join('');
+
+      // ----- Tabla de últimas ventas con botón para eliminar -----
+      document.getElementById('tablaVentas').innerHTML = d.ultimas.map((v) => `
+        <tr>
+          <td>${nombreMes(v.fecha)}</td><td>${v.producto}</td><td>${v.region}</td>
+          <td>${v.unidades}</td><td>${dinero(v.precio)}</td><td>${dinero(v.unidades * v.precio)}</td>
+          <td><button class="eliminar" onclick="eliminar(${v.indice})">Eliminar</button></td>
+        </tr>`).join('');
+    }
+
+    // Elimina una venta enviando una petición DELETE al servidor
+    async function eliminar(indice) {
+      if (!confirm('¿Seguro que quiere eliminar esta venta?')) return;
+      await fetch('/api/ventas/' + indice, { method: 'DELETE' });
+      cargar();
     }
 
     // Formulario: envía la venta al servidor con POST
@@ -110,6 +342,12 @@
       document.getElementById('mensaje').textContent = r.ok ? '✅ Venta guardada' : '❌ Datos inválidos';
       if (r.ok) { e.target.reset(); cargar(); }
     });
+
+    // Menú lateral: marca la opción activa
+    document.querySelectorAll('nav a').forEach((a) => a.addEventListener('click', () => {
+      document.querySelectorAll('nav a').forEach((x) => x.classList.remove('activo'));
+      a.classList.add('activo');
+    }));
 
     cargar();
     setInterval(cargar, 5000); // se actualiza solo cada 5 segundos
